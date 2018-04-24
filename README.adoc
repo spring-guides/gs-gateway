@@ -258,7 +258,7 @@ Below is the complete contents of `Application.java`.
 `src/main/java/gateway/Application.java`
 [source,java]
 ----
-include::complete/src/main/java/gateway/Application.java[]
+include::complete/src/main/java/gateway/Application.java[tag=code]
 ----
 
 Create a new class called `ApplicationTest` in `src/main/test/java/gateway`.

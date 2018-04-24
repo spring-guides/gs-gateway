@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// tag::code[]
 @SpringBootApplication
 @EnableConfigurationProperties(UriConfiguration.class)
 @RestController
@@ -64,3 +65,4 @@ class UriConfiguration {
     }
 }
 // end::uri-configuration[]
+// end::code[]
