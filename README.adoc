@@ -266,7 +266,7 @@ In the new class add the following content.
 
 [source,java]
 ----
-include::complete/test/main/java/gateway/ApplicationTest.java[]
+include::complete/src/test/java/gateway/ApplicationTest.java[]
 ----
 
 Our test is actually taking advantage of WireMock from Spring Cloud Contract in order
