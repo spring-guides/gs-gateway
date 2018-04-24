@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework</groupId>
-    <artifactId>draft-gs-spring-cloud-gateway</artifactId>
+    <artifactId>gs-gateway</artifactId>
     <version>0.1.0</version>
 
     <parent>
