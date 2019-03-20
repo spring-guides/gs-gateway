@@ -1,9 +1,9 @@
 :spring_version: current
 :spring_boot_version: 2.0.0.RELEASE
-:Controller: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
-:DispatcherServlet: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
-:SpringApplication: http://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
-:ResponseBody: http://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/bind/annotation/ResponseBody.html
+:Controller: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
+:DispatcherServlet: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
+:SpringApplication: https://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
+:ResponseBody: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/bind/annotation/ResponseBody.html
 :toc:
 :icons: font
 :source-highlighter: prettify
@@ -35,7 +35,7 @@ include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/
 == Creating A Simple Route
 
 The Spring Cloud Gateway uses routes in order to process requests to downstream services.  In
-this guide we will route all of our requests to http://httpbin.org[HTTPBin].  Routes can be configured
+this guide we will route all of our requests to https://httpbin.org[HTTPBin].  Routes can be configured
 a number of ways but for this guide we will use the Java API provided
 by the Gateway.
 
@@ -54,7 +54,7 @@ The above `myRoutes` method takes in a `RouteLocatorBuilder` which can easily be
 to create routes.  In addition to just creating routes, `RouteLocatorBuilder` allows you to add predicates and filters to your routes so
 you can route handle based on certain conditions as well as alter the request/response as you see fit.
 
-Let's create a route that routes a request to `http://httpbin.org/get` when a request is
+Let's create a route that routes a request to `https://httpbin.org/get` when a request is
 made to the Gateway at `/get`.  In our configuration of this route we will add a filter that will add the
 request header `Hello` with the value `World` to the request before it is routed.
 
