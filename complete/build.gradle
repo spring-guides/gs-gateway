@@ -27,7 +27,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Greenwich.SR1"
     }
 }
 
