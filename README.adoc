@@ -163,7 +163,7 @@ content-length: 0
 
 As you can see Hystrix timed out waiting for the response from HTTPBin.  When Hystrix times out
 we can optionaly provide a fallback so that clients do not just received a `504` but something
-more meaninful.  In a production scenario you may return some data from a cache for example,
+more meaningful.  In a production scenario you may return some data from a cache for example,
 but in our simple example we will just return a response with the body `fallback` instead.
 
 To do this, lets modify our Hystrix filter to provide a URL to call in the case of a timeout.
