@@ -18,7 +18,7 @@
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Greenwich.SR2</version>
+                <version>Greenwich.SR5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
