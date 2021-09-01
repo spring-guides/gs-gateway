@@ -1,5 +1,5 @@
 :spring_version: current
-:spring_boot_version: 2.0.0.RELEASE
+:spring_boot_version: 2.1.7.RELEASE
 :Controller: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
 :DispatcherServlet: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
 :SpringApplication: https://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
@@ -10,33 +10,43 @@
 :project_id: gs-gateway
 This guide walks you through how to use the Spring Cloud Gateway
 
-== What you'll build
+== What You Will Build
 
-You'll build a gateway using https://cloud.spring.io/spring-cloud-gateway/[Spring Cloud Gateway].
+You will build a gateway using https://cloud.spring.io/spring-cloud-gateway/[Spring Cloud Gateway].
 
 
-== What you'll need
+== What You Need
 
 :java_version: 1.8
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/prereq_editor_jdk_buildtools.adoc[]
 
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/how_to_complete_this_guide.adoc[]
 
+[[scratch]]
+== Building with Maven
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/hide-show-gradle.adoc[]
+The following listing shows the Maven build file:
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/hide-show-maven.adoc[]
+[src,xml]
+----
+include::initial/pom.xml[]
+----
 
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/hide-show-sts.adoc[]
+== Building with Gradle
 
+The following listing shows the Gradle build file:
 
+[src,xml]
+----
+include::initial/build.gradle[]
+----
 
 [[initial]]
 == Creating A Simple Route
 
-The Spring Cloud Gateway uses routes in order to process requests to downstream services.  In
-this guide we will route all of our requests to https://httpbin.org[HTTPBin].  Routes can be configured
-a number of ways but for this guide we will use the Java API provided
+The Spring Cloud Gateway uses routes to process requests to downstream services. In
+this guide, we route all of our requests to https://httpbin.org[HTTPBin]. Routes can be configured
+a number of ways, but, for this guide, we use the Java API provided
 by the Gateway.
 
 To get started, create a new `Bean` of type `RouteLocator` in `Application.java`.
@@ -50,13 +60,13 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 }
 ----
 
-The above `myRoutes` method takes in a `RouteLocatorBuilder` which can easily be used
-to create routes.  In addition to just creating routes, `RouteLocatorBuilder` allows you to add predicates and filters to your routes so
+The `myRoutes` method takes in a `RouteLocatorBuilder` that can be used
+to create routes. In addition to creating routes, `RouteLocatorBuilder` lets you add predicates and filters to your routes so that
 you can route handle based on certain conditions as well as alter the request/response as you see fit.
 
-Let's create a route that routes a request to `https://httpbin.org/get` when a request is
-made to the Gateway at `/get`.  In our configuration of this route we will add a filter that will add the
-request header `Hello` with the value `World` to the request before it is routed.
+Now we can create a route that routes a request to `https://httpbin.org/get` when a request is
+made to the Gateway at `/get`. In our configuration of this route, we add a filter that adds the
+`Hello` request header with a value of `World` to the request before it is routed:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2]
@@ -72,16 +82,16 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 }
 ----
 
-To test our very simple Gateway, just run `Application.java`, it should be run on port `8080`.
+To test our simple Gateway, we can run `Application.java` on port `8080`.
 Once the application is running, make a request to `http://localhost:8080/get`.
-You can do this using cURL by issuing the following command in your terminal.
+You can do so by using the following cURL command in your terminal:
 
 [source,bash]
 ----
 $ curl http://localhost:8080/get
 ----
 
-You should receive a response back that looks like this
+You should receive a response back that looks similar to the following output:
 
 [source,json]
 ----
@@ -101,20 +111,20 @@ You should receive a response back that looks like this
 }
 ----
 
-Notice that HTTPBin shows that the header `Hello` with the value `World` was sent in the request.
+Note that HTTPBin shows that the `Hello` header with a value of `World` was sent in the request.
 
 == Using Hystrix
 
-Now lets do something a little more interesting.  Since the services behind the Gateway could
-potentially behave poorly effecting our clients we might want to wrap the routes we create
-in circuit breakers.  You can do this in the Spring Cloud Gateway using Hystrix.
-This is implemented via a simple filter that you can add to your requests.
-Lets create another route to demonstrate this.
+Now we can do something a little more interesting. Since the services behind the Gateway could
+potentially behave poorly and affect our clients, we might want to wrap the routes we create
+in circuit breakers. You can do so in the Spring Cloud Gateway by using Hystrix.
+This is implemented through a simple filter that you can add to your requests.
+We can create another route to demonstrate this.
 
-In this example we will leverage HTTPBin's delay API that waits a certain number of
-seconds before sending a response.  Since this API could potentially take a long
-time to send its response we can wrap the route that uses this API in a `HystrixCommand`.
-Add a new route to our `RouteLocator` object that looks like the following
+In the next example, we use HTTPBin's delay API, which waits a certain number of
+seconds before sending a response. Since this API could potentially take a long
+time to send its response, we can wrap the route that uses this API in a `HystrixCommand`.
+The following listing adds a new route to our `RouteLocator` object:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2]
@@ -134,26 +144,26 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 }
 ----
 
-There are some differences between this new route configuration and the previous one we created.  For one,
-we are using the host predicate instead of the path predicate.  This means that as long as
-the host is `hystrix.com` we will route the request to HTTPBin and wrap that request in
-a `HystrixCommand`.  We do this by applying a filter to the route.  The Hystrix filter
-can be configured using a configuration object.  In this example we are just giving the
-`HystrixCommand` the name `mycmd`.
+There are some differences between this new route configuration and the previous one we created. For one,
+we use the host predicate instead of the path predicate. This means that, as long as
+the host is `hystrix.com`, we route the request to HTTPBin and wrap that request in
+a `HystrixCommand`.  We do so by applying a filter to the route. We can configure the Hystrix filter
+by using a configuration object. In this example, we give the
+`HystrixCommand` a name of `mycmd`.
 
-Lets test this new route.  Start the application, but this time we are going to make a request
-to `/delay/3`.  It is also important that we include a `Host` header that has the a host
-of `hystrix.com` or else the request won't be routed.  In cURL this would look like
+Now we can test this new route. To do so, we need to start the application, but, this time, we are going to make a request
+to `/delay/3`. It is also important that we include a `Host` header that has a host
+of `hystrix.com`. Otherwise, the request is not routed. We can use the following cURL command:
 
 [source,bash]
 ----
 $ curl --dump-header - --header 'Host: www.hystrix.com' http://localhost:8080/delay/3
 ----
 
-NOTE: We are using `--dump-header` to see the response headers, the `-` after `--dump-header`
-is telling cURL to print the headers to stdout.
+NOTE: We use `--dump-header` to see the response headers. The `-` after `--dump-header`
+tells cURL to print the headers to stdout.
 
-After executing this command you should see the following in your terminal
+After using this command, you should see the following in your terminal:
 
 [source,bash]
 ----
@@ -161,12 +171,12 @@ HTTP/1.1 504 Gateway Timeout
 content-length: 0
 ----
 
-As you can see Hystrix timed out waiting for the response from HTTPBin.  When Hystrix times out
-we can optionaly provide a fallback so that clients do not just received a `504` but something
-more meaninful.  In a production scenario you may return some data from a cache for example,
-but in our simple example we will just return a response with the body `fallback` instead.
+As you can see Hystrix timed out while waiting for the response from HTTPBin. When Hystrix times out,
+we can optionally provide a fallback so that clients do not receive a `504` but something
+more meaningful. In a production scenario, you might return some data from a cache, for example,
+but, in our simple example, we return a response with the body `fallback` instead.
 
-To do this, lets modify our Hystrix filter to provide a URL to call in the case of a timeout.
+To do so, we can modify our Hystrix filter to provide a URL to call in the case of a timeout:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2]
@@ -188,11 +198,11 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 }
 ----
 
-Now when the Hystrix wrapped route times out it will call `/fallback` in the Gateway app.
-Lets add the `/fallback` endpoint to our application.
+Now, when the Hystrix wrapped route times out, it calls `/fallback` in the Gateway application.
+Now we can add the `/fallback` endpoint to our application.
 
-In `Application.java` add the class level annotation `@RestController`, then add the following
-`@RequestMapping` to the class.
+In `Application.java`, we add the `@RestController` class level annotation and then add the following
+`@RequestMapping` to the class:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2,indent=0]
@@ -223,11 +233,11 @@ fallback
 == Writing Tests
 
 As a good developer, we should write some tests to make sure our Gateway is doing what we
-expect it should.  In most cases we want to limit out dependencies on outside resources,
-especially in unit tests, so we should not depend on HTTPBin.  One solution to this problem
-is to make the URI in our routes configurable, so we can easily change the URI if we need to.
+expect it should. In most cases, we want to limit out dependencies on outside resources,
+especially in unit tests, so we should not depend on HTTPBin. One solution to this problem
+is to make the URI in our routes configurable, so we can change the URI if we need to.
 
-In `Application.java` create a new class called `UriConfiguration`.
+To do so, in `Application.java`, we can create a new class called `UriConfiguration`:
 
 
 [source,java,tabsize=2]
@@ -235,14 +245,14 @@ In `Application.java` create a new class called `UriConfiguration`.
 include::complete/src/main/java/gateway/Application.java[tag=uri-configuration]
 ----
 
-To enable this `ConfigurationProperties` we need to also add a class-level annotation
+To enable `ConfigurationProperties`, we need to also add a class-level annotation
 to `Application.java`.
 
 ```
 @EnableConfigurationProperties(UriConfiguration.class)
 ```
 
-With our new configuration class in place lets use it in the `myRoutes` method.
+With our new configuration class in place, we can use it in the `myRoutes` method:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2,indent=0]
@@ -250,10 +260,10 @@ With our new configuration class in place lets use it in the `myRoutes` method.
 include::complete/src/main/java/gateway/Application.java[tag=route-locator]
 ----
 
-As you can see, instead of hardcoding the URL to HTTPBin we are getting the URL from our
-new configuration class instead.
+Instead of hardcoding the URL to HTTPBin, we instead get the URL from our
+new configuration class.
 
-Below is the complete contents of `Application.java`.
+The following listing shows the complete contents of `Application.java`:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2]
@@ -261,31 +271,27 @@ Below is the complete contents of `Application.java`.
 include::complete/src/main/java/gateway/Application.java[tag=code]
 ----
 
-Create a new class called `ApplicationTest` in `src/main/test/java/gateway`.
-In the new class add the following content.
+Now we can create a new class called `ApplicationTest` in `src/main/test/java/gateway`.
+In the new class, we add the following content:
 
 [source,java,tabsize=2]
 ----
 include::complete/src/test/java/gateway/ApplicationTest.java[tag=code]
 ----
 
-Our test is actually taking advantage of WireMock from Spring Cloud Contract in order
-stand up a server that can mock the APIs from HTTPBin.  The first thing to notice
-is the use of `@AutoConfigureWireMock(port = 0)`.  This annotation will start WireMock
+Our test takes advantage of WireMock from Spring Cloud Contract
+stand up a server that can mock the APIs from HTTPBin. The first thing to notice
+is the use of `@AutoConfigureWireMock(port = 0)`. This annotation starts WireMock
 on a random port for us.
 
-Next notice that we are taking advantage of our `UriConfiguration` class and setting the
-`httpbin` property in the `@SpringBootTest` annotation to the WireMock server running locally.  Within the test we then
-setup "stubs" for the HTTPBin APIs we call via the Gateway and mock the behavior we expect.
-Finally we use `WebTestClient` to actually make requests to the Gateway and validate the responses.
+Next, note that we take advantage of our `UriConfiguration` class and set the
+`httpbin` property in the `@SpringBootTest` annotation to the WireMock server running locally. Within the test, we then
+setup "`stubs`" for the HTTPBin APIs we call through the Gateway and mock the behavior we expect.
+Finally, we use `WebTestClient` to make requests to the Gateway and validate the responses.
 
 
 == Summary
 
-Congratulations! You've just built your first Spring Coud Gateway application!
-
-
-
+Congratulations! You have just built your first Spring Cloud Gateway application!
 
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/footer.adoc[]
-
