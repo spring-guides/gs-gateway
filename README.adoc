@@ -113,17 +113,17 @@ You should receive a response back that looks similar to the following output:
 
 Note that HTTPBin shows that the `Hello` header with a value of `World` was sent in the request.
 
-== Using Hystrix
+== Using Spring Cloud CircuitBreaker
 
 Now we can do something a little more interesting. Since the services behind the Gateway could
 potentially behave poorly and affect our clients, we might want to wrap the routes we create
-in circuit breakers. You can do so in the Spring Cloud Gateway by using Hystrix.
+in circuit breakers. You can do so in the Spring Cloud Gateway by using the Resilience4J Spring Cloud CircuitBreaker implementation.
 This is implemented through a simple filter that you can add to your requests.
 We can create another route to demonstrate this.
 
 In the next example, we use HTTPBin's delay API, which waits a certain number of
 seconds before sending a response. Since this API could potentially take a long
-time to send its response, we can wrap the route that uses this API in a `HystrixCommand`.
+time to send its response, we can wrap the route that uses this API in a circuit breaker.
 The following listing adds a new route to our `RouteLocator` object:
 
 `src/main/java/gateway/Application.java`
@@ -137,8 +137,8 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
             .filters(f -> f.addRequestHeader("Hello", "World"))
             .uri("http://httpbin.org:80"))
         .route(p -> p
-            .host("*.hystrix.com")
-            .filters(f -> f.hystrix(config -> config.setName("mycmd")))
+            .host("*.circuitbreaker.com")
+            .filters(f -> f.circuitbreaker(config -> config.setName("mycmd")))
             .uri("http://httpbin.org:80")).
         build();
 }
@@ -146,18 +146,18 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 
 There are some differences between this new route configuration and the previous one we created. For one,
 we use the host predicate instead of the path predicate. This means that, as long as
-the host is `hystrix.com`, we route the request to HTTPBin and wrap that request in
-a `HystrixCommand`.  We do so by applying a filter to the route. We can configure the Hystrix filter
+the host is `circuitbreaker.com`, we route the request to HTTPBin and wrap that request in
+a circuit breaker.  We do so by applying a filter to the route. We can configure the circuit breaker filter
 by using a configuration object. In this example, we give the
-`HystrixCommand` a name of `mycmd`.
+circuit breaker a name of `mycmd`.
 
 Now we can test this new route. To do so, we need to start the application, but, this time, we are going to make a request
 to `/delay/3`. It is also important that we include a `Host` header that has a host
-of `hystrix.com`. Otherwise, the request is not routed. We can use the following cURL command:
+of `circuitbreaker.com`. Otherwise, the request is not routed. We can use the following cURL command:
 
 [source,bash]
 ----
-$ curl --dump-header - --header 'Host: www.hystrix.com' http://localhost:8080/delay/3
+$ curl --dump-header - --header 'Host: www.circuitbreaker.com' http://localhost:8080/delay/3
 ----
 
 NOTE: We use `--dump-header` to see the response headers. The `-` after `--dump-header`
@@ -171,12 +171,12 @@ HTTP/1.1 504 Gateway Timeout
 content-length: 0
 ----
 
-As you can see Hystrix timed out while waiting for the response from HTTPBin. When Hystrix times out,
+As you can see the circuit breaker timed out while waiting for the response from HTTPBin. When the circuit breaker times out,
 we can optionally provide a fallback so that clients do not receive a `504` but something
 more meaningful. In a production scenario, you might return some data from a cache, for example,
 but, in our simple example, we return a response with the body `fallback` instead.
 
-To do so, we can modify our Hystrix filter to provide a URL to call in the case of a timeout:
+To do so, we can modify our circuit breaker filter to provide a URL to call in the case of a timeout:
 
 `src/main/java/gateway/Application.java`
 [source,java,tabsize=2]
@@ -189,8 +189,8 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
             .filters(f -> f.addRequestHeader("Hello", "World"))
             .uri("http://httpbin.org:80"))
         .route(p -> p
-            .host("*.hystrix.com")
-            .filters(f -> f.hystrix(config -> config
+            .host("*.circuitbreaker.com")
+            .filters(f -> f.circuitbreaker(config -> config
                 .setName("mycmd")
                 .setFallbackUri("forward:/fallback")))
             .uri("http://httpbin.org:80"))
@@ -198,7 +198,7 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 }
 ----
 
-Now, when the Hystrix wrapped route times out, it calls `/fallback` in the Gateway application.
+Now, when the circuit breaker wrapped route times out, it calls `/fallback` in the Gateway application.
 Now we can add the `/fallback` endpoint to our application.
 
 In `Application.java`, we add the `@RestController` class level annotation and then add the following
@@ -215,7 +215,7 @@ cURL command
 
 [source,bash]
 ----
-$ curl --dump-header - --header 'Host: www.hystrix.com' http://localhost:8080/delay/3
+$ curl --dump-header - --header 'Host: www.circuitbreaker.com' http://localhost:8080/delay/3
 ----
 
 With the fallback in place, we now see that we get a `200` back from the Gateway with the response

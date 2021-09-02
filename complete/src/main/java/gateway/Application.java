@@ -32,9 +32,9 @@ public class Application {
 				.filters(f -> f.addRequestHeader("Hello", "World"))
 				.uri(httpUri))
 			.route(p -> p
-				.host("*.hystrix.com")
+				.host("*.circuitbreaker.com")
 				.filters(f -> f
-					.hystrix(config -> config
+					.circuitBreaker(config -> config
 						.setName("mycmd")
 						.setFallbackUri("forward:/fallback")))
 				.uri(httpUri))
