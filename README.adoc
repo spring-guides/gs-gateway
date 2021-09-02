@@ -1,5 +1,5 @@
 :spring_version: current
-:spring_boot_version: 2.1.7.RELEASE
+:spring_boot_version: 2.5.4
 :Controller: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/stereotype/Controller.html
 :DispatcherServlet: https://docs.spring.io/spring/docs/{spring_version}/javadoc-api/org/springframework/web/servlet/DispatcherServlet.html
 :SpringApplication: https://docs.spring.io/spring-boot/docs/{spring_boot_version}/api/org/springframework/boot/SpringApplication.html
@@ -23,23 +23,42 @@ include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/how_to_complete_this_guide.adoc[]
 
 [[scratch]]
-== Building with Maven
+== Starting with Spring Initializr
 
-The following listing shows the Maven build file:
+If you use Maven, visit the https://start.spring.io/#!type=maven-project&language=java&platformVersion=2.5.4&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=gateway-initial&name=gateway-initial&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.example.gateway-initial&dependencies=cloud-gateway,cloud-resilience4j,cloud-contract-stub-runner[Spring Initializr] to generate a new project with the required dependencies (Gateway, Resilience4J, and Contract Stub Runner).
 
+The following listing shows the `pom.xml` file that is created when you choose Maven:
+
+====
 [src,xml]
 ----
 include::initial/pom.xml[]
 ----
+====
 
-== Building with Gradle
+If you use Gradle, visit the https://start.spring.io/#!type=gradle-project&language=java&platformVersion=2.5.4&packaging=jar&jvmVersion=1.8&groupId=com.example&artifactId=gateway-initial&name=gateway-initial&description=Demo%20project%20for%20Spring%20Cloud%20Gateway&packageName=com.example.gateway-initial&dependencies=cloud-gateway,cloud-resilience4j,cloud-contract-stub-runner[Spring Initializr] to generate a new project with the required dependencies (Gateway, Resilience4J, and Contract Stub Runner).
 
-The following listing shows the Gradle build file:
+The following listing shows the `build.gradle` file that is created when you choose Gradle:
 
-[src,xml]
+====
+[src,java]
 ----
 include::initial/build.gradle[]
 ----
+====
+
+=== Manual Initialization (optional)
+
+If you want to initialize the project manually rather than use the links shown earlier, follow the steps given below:
+
+. Navigate to https://start.spring.io.
+This service pulls in all the dependencies you need for an application and does most of the setup for you.
+. Choose either Gradle or Maven and the language you want to use. This guide assumes that you chose Java.
+. Click *Dependencies* and select *Gateway*, *Resilience4J*, and *Contract Stub Runner*.
+. Click *Generate*.
+. Download the resulting ZIP file, which is an archive of a web application that is configured with your choices.
+
+NOTE: If your IDE has the Spring Initializr integration, you can complete this process from your IDE.
 
 [[initial]]
 == Creating A Simple Route
