@@ -1,7 +1,6 @@
 package gateway;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +15,6 @@ import static org.assertj.core.api.Assertions.*;
  * @author Ryan Baxter
  */
 // tag::code[]
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 		properties = {"httpbin=http://localhost:${wiremock.server.port}"})
 @AutoConfigureWireMock(port = 0)
@@ -46,7 +44,7 @@ public class ApplicationTest {
 
 		webClient
 			.get().uri("/delay/3")
-			.header("Host", "www.hystrix.com")
+			.header("Host", "www.circuitbreaker.com")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
