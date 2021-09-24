@@ -159,6 +159,14 @@ $ curl --dump-header - --header 'Host: www.circuitbreaker.com' http://localhost:
 
 NOTE: We use `--dump-header` to see the response headers. The `-` after `--dump-header`
 tells cURL to print the headers to stdout.
+NOTE: In some cases, you'd get an error saying that ReactiveResilience4JCircuitBreakerFactory not found. A workaround is to add this bean to your code:
+----
+@Bean
+public ReactiveResilience4JCircuitBreakerFactory factory()
+{
+    return new ReactiveResilience4JCircuitBreakerFactory();
+}
+----
 
 After using this command, you should see the following in your terminal:
 
