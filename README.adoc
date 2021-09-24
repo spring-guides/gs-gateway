@@ -187,7 +187,7 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
             .uri("http://httpbin.org:80"))
         .route(p -> p
             .host("*.circuitbreaker.com")
-            .filters(f -> f.circuitbreaker(config -> config
+            .filters(f -> f.circuitBreaker(config -> config
                 .setName("mycmd")
                 .setFallbackUri("forward:/fallback")))
             .uri("http://httpbin.org:80"))
