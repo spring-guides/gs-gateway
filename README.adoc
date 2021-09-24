@@ -175,6 +175,15 @@ After using this command, you should see the following in your terminal:
 HTTP/1.1 504 Gateway Timeout
 content-length: 0
 ----
+NOTE: You can also get an Error saying: 
+----
+socket hang up
+----
+, and sometimes: 
+----
+curl: (52) Empty reply from server
+----
+where the server effectively closes connection immediately
 
 As you can see the circuit breaker timed out while waiting for the response from HTTPBin. When the circuit breaker times out,
 we can optionally provide a fallback so that clients do not receive a `504` but something
