@@ -120,6 +120,27 @@ in circuit breakers. You can do so in the Spring Cloud Gateway by using the Resi
 This is implemented through a simple filter that you can add to your requests.
 We can create another route to demonstrate this.
 
+To use this filter you need to add the reactive Resilience4J CircuitBreaker dependency to your classpath.
+
+`pom.xml`
+[source,java,tabsize=2]
+----
+...
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+</dependency>
+...
+----
+
+`build.gradle`
+[source,java,tabsize=2]
+----
+...
+implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j")
+...
+----
+
 In the next example, we use HTTPBin's delay API, which waits a certain number of
 seconds before sending a response. Since this API could potentially take a long
 time to send its response, we can wrap the route that uses this API in a circuit breaker.
@@ -137,7 +158,7 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
             .uri("http://httpbin.org:80"))
         .route(p -> p
             .host("*.circuitbreaker.com")
-            .filters(f -> f.circuitbreaker(config -> config.setName("mycmd")))
+            .filters(f -> f.circuitBreaker(config -> config.setName("mycmd")))
             .uri("http://httpbin.org:80")).
         build();
 }
