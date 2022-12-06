@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.7.1")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.7.6")
     }
 }
 
@@ -27,7 +27,7 @@ targetCompatibility = 1.8
 
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.5"
     }
 }
 
