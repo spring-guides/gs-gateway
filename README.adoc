@@ -61,9 +61,9 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 
 The `myRoutes` method takes in a `RouteLocatorBuilder` that can be used
 to create routes. In addition to creating routes, `RouteLocatorBuilder` lets you add predicates and filters to your routes so that
-you can route handle based on certain conditions as well as alter the request/response as you see fit.
+you can route based on certain conditions as well as alter the request/response as you see fit.
 
-Now we can create a route that routes a request to `https://httpbin.org/get` when a request is
+Now we can create a route that routes a request to `http://httpbin.org/get` when a request is
 made to the Gateway at `/get`. In our configuration of this route, we add a filter that adds the
 `Hello` request header with a value of `World` to the request before it is routed:
 
@@ -76,7 +76,7 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         .route(p -> p
             .path("/get")
             .filters(f -> f.addRequestHeader("Hello", "World"))
-            .uri("http://httpbin.org:80"))
+            .uri("http://httpbin.org"))
         .build();
 }
 ----
@@ -155,11 +155,11 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         .route(p -> p
             .path("/get")
             .filters(f -> f.addRequestHeader("Hello", "World"))
-            .uri("http://httpbin.org:80"))
+            .uri("http://httpbin.org"))
         .route(p -> p
             .host("*.circuitbreaker.com")
             .filters(f -> f.circuitBreaker(config -> config.setName("mycmd")))
-            .uri("http://httpbin.org:80")).
+            .uri("http://httpbin.org")).
         build();
 }
 ----
@@ -207,13 +207,13 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         .route(p -> p
             .path("/get")
             .filters(f -> f.addRequestHeader("Hello", "World"))
-            .uri("http://httpbin.org:80"))
+            .uri("http://httpbin.org"))
         .route(p -> p
             .host("*.circuitbreaker.com")
             .filters(f -> f.circuitBreaker(config -> config
                 .setName("mycmd")
                 .setFallbackUri("forward:/fallback")))
-            .uri("http://httpbin.org:80"))
+            .uri("http://httpbin.org"))
         .build();
 }
 ----
