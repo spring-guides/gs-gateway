@@ -11,8 +11,9 @@ You will build a gateway using https://cloud.spring.io/spring-cloud-gateway/[Spr
 
 == What You Need
 
-:java_version: 1.8
-include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/prereq_editor_jdk_buildtools.adoc[]
+* About 15 minutes
+* A favorite text editor or IDE
+* https://www.oracle.com/java/technologies/downloads/[Java 17+]
 
 include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/main/how_to_complete_this_guide.adoc[]
 
@@ -113,20 +114,6 @@ potentially behave poorly and affect our clients, we might want to wrap the rout
 in circuit breakers. You can do so in the Spring Cloud Gateway by using the Resilience4J Spring Cloud CircuitBreaker implementation.
 This is implemented through a simple filter that you can add to your requests.
 We can create another route to demonstrate this.
-
-To use this filter you need to add the reactive Resilience4J CircuitBreaker dependency to your classpath.
-
-`pom.xml`
-[source,java,tabsize=2]
-----
-include::complete/pom.xml[tags=dependency]
-----
-
-`build.gradle`
-[source,java,tabsize=2]
-----
-include::complete/build.gradle[tags=dependency]
-----
 
 In the next example, we use HTTPBin's delay API, which waits a certain number of
 seconds before sending a response. Since this API could potentially take a long
