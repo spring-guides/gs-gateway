@@ -265,7 +265,7 @@ The following listing shows the complete contents of `Application.java`:
 include::complete/src/main/java/gateway/Application.java[tag=code]
 ----
 
-Now we can create a new class called `ApplicationTest` in `src/main/test/java/gateway`.
+Now we can create a new class called `ApplicationTest` in `src/test/java/gateway`.
 In the new class, we add the following content:
 
 [source,java,tabsize=2]
