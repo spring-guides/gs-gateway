@@ -1,47 +1,60 @@
 package gateway;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.Test;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
+import org.wiremock.spring.InjectWireMock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.assertj.core.api.Assertions.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Ryan Baxter
  */
 // tag::code[]
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-		properties = {"httpbin=http://localhost:${wiremock.server.port}"})
-@AutoConfigureWireMock(port = 0)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
+@EnableWireMock({
+	@ConfigureWireMock(name = "httpbin", baseUrlProperties = "httpbin")
+})
 public class ApplicationTest {
+
+	@InjectWireMock("httpbin")
+	private WireMockServer httpbin;
+
+	@LocalServerPort
+	private int port;
 
 	@Autowired
 	private WebTestClient webClient;
 
 	@Test
-	public void contextLoads() throws Exception {
-		//Stubs
-		stubFor(get(urlEqualTo("/get"))
+	void contextLoads() {
+		this.httpbin.stubFor(get(urlEqualTo("/get"))
 				.willReturn(aResponse()
 					.withBody("{\"headers\":{\"Hello\":\"World\"}}")
 					.withHeader("Content-Type", "application/json")));
-		stubFor(get(urlEqualTo("/delay/3"))
+		this.httpbin.stubFor(get(urlEqualTo("/delay/3"))
 			.willReturn(aResponse()
 				.withBody("no fallback")
 				.withFixedDelay(3000)));
 
-		webClient
+		this.webClient
 			.get().uri("/get")
 			.exchange()
 			.expectStatus().isOk()
 			.expectBody()
 			.jsonPath("$.headers.Hello").isEqualTo("World");
-
-		webClient
+		this.webClient
 			.get().uri("/delay/3")
 			.header("Host", "www.circuitbreaker.com")
 			.exchange()
