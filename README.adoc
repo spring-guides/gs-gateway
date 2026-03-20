@@ -101,7 +101,7 @@ You should receive a response back that looks similar to the following output:
     "X-Forwarded-Host": "localhost:8080"
   },
   "origin": "0:0:0:0:0:0:0:1, 73.68.251.70",
-  "url": "http://localhost:8080/get"
+  "url": "http://httpbin.org/get"
 }
 ----
 
@@ -162,7 +162,8 @@ After using this command, you should see the following in your terminal:
 [source,bash]
 ----
 HTTP/1.1 504 Gateway Timeout
-content-length: 0
+
+...
 ----
 
 As you can see the circuit breaker timed out while waiting for the response from HTTPBin. When the circuit breaker times out,
