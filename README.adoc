@@ -2,11 +2,11 @@
 :icons: font
 :source-highlighter: prettify
 :project_id: gs-gateway
-This guide walks you through how to use the Spring Cloud Gateway
+This guide walks you through how to use https://spring.io/projects/spring-cloud-gateway[Spring Cloud Gateway].
 
 == What You Will Build
 
-You will build a gateway using https://cloud.spring.io/spring-cloud-gateway/[Spring Cloud Gateway].
+You will build a gateway using Spring Cloud Gateway.
 
 
 == What You Need
@@ -20,20 +20,20 @@ include::https://raw.githubusercontent.com/spring-guides/getting-started-macros/
 [[scratch]]
 == Starting with Spring Initializr
 
-You can use this https://start.spring.io/#!type=maven-project&language=java&packaging=jar&groupId=com.example&artifactId=gateway&name=gateway&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.gateway&dependencies=cloud-gateway-reactive,cloud-resilience4j,cloud-contract-stub-runner[pre-initialized project] and click Generate to download a ZIP file. This project is configured to fit the examples in this tutorial.
+You can use this https://start.spring.io/#!type=maven-project&language=java&packaging=jar&groupId=com.example&artifactId=gateway&name=gateway&description=Demo%20project%20for%20Spring%20Boot&packageName=com.example.gateway&dependencies=cloud-gateway-reactive,cloud-resilience4j[pre-initialized project] and click Generate to download a ZIP file. This project is configured to fit the examples in this tutorial.
 
 To manually initialize the project:
 
 . Navigate to https://start.spring.io.
 This service pulls in all the dependencies you need for an application and does most of the setup for you.
 . Choose either Gradle or Maven and the language you want to use. This guide assumes that you chose Java.
-. Click *Dependencies* and select *Reactive Gateway*, *Resilience4J*, and *Contract Stub Runner*.
+. Click *Dependencies* and select *Reactive Gateway* and *Resilience4J*.
 . Click *Generate*.
 . Download the resulting ZIP file, which is an archive of a web application that is configured with your choices.
 
 NOTE: If your IDE has the Spring Initializr integration, you can complete this process from your IDE.
 
-NOTE: You can also fork the project from Github and open it in your IDE or other editor.
+NOTE: You can also fork the project from GitHub and open it in your IDE or other editor.
 
 [[initial]]
 == Creating A Simple Route
@@ -56,7 +56,7 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
 
 The `myRoutes` method takes in a `RouteLocatorBuilder` that can be used
 to create routes. In addition to creating routes, `RouteLocatorBuilder` lets you add predicates and filters to your routes so that
-you can route handle based on certain conditions as well as alter the request/response as you see fit.
+you can route traffic based on certain conditions as well as alter the request/response as you see fit.
 
 Now we can create a route that routes a request to `https://httpbin.org/get` when a request is
 made to the Gateway at `/get`. In our configuration of this route, we add a filter that adds the
@@ -133,8 +133,8 @@ public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         .route(p -> p
             .host("*.circuitbreaker.com")
             .filters(f -> f.circuitBreaker(config -> config.setName("mycmd")))
-            .uri("http://httpbin.org:80")).
-        build();
+            .uri("http://httpbin.org:80"))
+        .build();
 }
 ----
 
@@ -205,7 +205,7 @@ include::complete/src/main/java/gateway/Application.java[tag=fallback]
 ----
 
 To test this new fallback functionality, restart the application and again issue the following
-cURL command
+cURL command:
 
 [source,bash]
 ----
@@ -265,6 +265,20 @@ The following listing shows the complete contents of `Application.java`:
 include::complete/src/main/java/gateway/Application.java[tag=code]
 ----
 
+Next, add WireMock as a test dependency so you can stand in for HTTPBin during tests.
+
+Maven:
+[source,xml]
+----
+include::complete/pom.xml[tag=wiremock-dependency]
+----
+
+Gradle:
+[source,groovy]
+----
+include::complete/build.gradle[tag=wiremock-dependency]
+----
+
 Now we can create a new class called `ApplicationTest` in `src/test/java/gateway`.
 In the new class, we add the following content:
 
@@ -273,16 +287,10 @@ In the new class, we add the following content:
 include::complete/src/test/java/gateway/ApplicationTest.java[tag=code]
 ----
 
-Our test takes advantage of WireMock from Spring Cloud Contract
-stand up a server that can mock the APIs from HTTPBin. The first thing to notice
-is the use of `@AutoConfigureWireMock(port = 0)`. This annotation starts WireMock
-on a random port for us.
+`@EnableWireMock` starts WireMock before the Spring context loads. `@ConfigureWireMock` maps the mock server's base URL to the `httpbin` property so it matches `UriConfiguration`. 
+`@InjectWireMock("httpbin")` gives a handle to register stubs in the test method.
 
-Next, note that we take advantage of our `UriConfiguration` class and set the
-`httpbin` property in the `@SpringBootTest` annotation to the WireMock server running locally. Within the test, we then
-setup "`stubs`" for the HTTPBin APIs we call through the Gateway and mock the behavior we expect.
-Finally, we use `WebTestClient` to make requests to the Gateway and validate the responses.
-
+The test sends traffic through the running gateway using `@AutoConfigureWebTestClient` and an injected `WebTestClient`.
 
 == Summary
 
